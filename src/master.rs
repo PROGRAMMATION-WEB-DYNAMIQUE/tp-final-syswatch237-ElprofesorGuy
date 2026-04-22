@@ -6,7 +6,7 @@ use std::io::{BufRead, BufReader, Write};
 use std::net::TcpStream;
 use std::time::Duration;
 
-const AUTH_TOKEN: &str = "ENSPD2026";
+const AUTH_TOKEN: &str = "ENSPD2025";
 const PORT: u16 = 7878;
 
 // Liste statique des machines — à remplir avec les IPs des PC étudiants
@@ -14,8 +14,8 @@ const PORT: u16 = 7878;
 fn machines() -> HashMap<String, String> {
     let mut m = HashMap::new();
     // format : "nom_affichage" => "ip"
-    m.insert("PC-01-TSEFACK".to_string(), "192.168.1.101".to_string());
-    m.insert("PC-02-FOKAM".to_string(), "192.168.1.102".to_string());
+    m.insert("PC-01-TSEFACK".to_string(), "192.168.1.173".to_string());
+    m.insert("PC-02-GUEMBOU".to_string(), "192.168.1.107".to_string());
     m.insert("PC-03-NZEUTEM".to_string(), "192.168.1.103".to_string());
     m.insert("ateba".to_string(), "192.168.1.105".to_string());
     // Ajouter autant de lignes que d'étudiants
@@ -63,7 +63,9 @@ impl AgentSession {
     fn send(&mut self, cmd: &str) -> Result<(), String> {
         self.stream
             .write_all(format!("{}\n", cmd).as_bytes())
-            .map_err(|e| e.to_string())
+            .map_err(|e| e.to_string())?;
+        self.stream.flush().map_err(|e| e.to_string())?;
+        self.stream.flush().map_err(|e| e.to_string())
     }
 
     fn read_line(&mut self) -> Result<String, String> {
